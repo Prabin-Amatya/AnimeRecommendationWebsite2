@@ -1,18 +1,23 @@
 import { FormControl, InputLabel, OutlinedInput, TextField } from "@mui/material"
 import API_URLS from "../../config"
-import { useSpecificQuery } from "../../hooks"
+import { useQueryForSearch, useSpecificQuery } from "../../hooks"
 import { useEffect, useState } from "react"
 import "../../static/index.css"
 import { useNavigate } from "react-router-dom"
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import SimilarAnime from "./similarAnime"
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  outline: 'none'
+  outline: 'none',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  width: "100%"
 };
 
 
@@ -20,9 +25,10 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
   const [animes, animeQueries] = useSpecificQuery(API_URLS.anime, "anime")
   const [favorites, favoriteQueries] = useSpecificQuery(API_URLS.favorites, "favourite")
   const [addOrRemove, setAddOrRemove] = useState(false)
-  const [showTrailer, setShowTrailer] = useState(false)
   const [search, setSearch] = useState("")
   const [open, setOpen] = useState(false);
+  const [openSimilar, setOpenSimilar] = useState(false);
+  const [similarAnimes] = useQueryForSearch(API_URLS.search, "search", currAnime? currAnime.id: null)
 
   const navigate = useNavigate()
   const handleInputChange = (e) =>{
@@ -40,12 +46,13 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
   }
 
   const handleAddFavourite = (anime) =>{
+    if(!user){
+      navigate("/Login")
+      return
+    }
     if(favorites.data.length >= 10){
       setMessage("You already have 10 favorites")
       return
-    }
-    if(!user){
-      navigate("/Login")
     }
     else{
       try{
@@ -69,12 +76,11 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
     }
   }
 
-  const handleShowTrailer = () =>{
-    setShowTrailer(true)
-  }
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOpenSimilar = () => setOpenSimilar(true);
+  const handleCloseSimilar = () => setOpenSimilar(false);
+  
 
   useEffect(()=>{
     if(favorites.isFetched == true && currAnime!=null)
@@ -93,23 +99,21 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
       <div style={{color:"#9f9f9f", textAlign:"center", marginTop:"2vh"}}>Add To Favourite</div>
       <FormControl sx={{borderBottom:"2px solid #9f9f9f", mt:"2vh", mb:"2vh"}}>
         <InputLabel
-          sx={{color:"#9f9f9f"}}
+          sx={{color:"#9f9f9f", "&.Mui-focused": { color: "transparent" }}}
         >
             Search
         </InputLabel>
         <OutlinedInput label="Search" sx={{
-                                    "&:hover": {
-                                      color: "#9f9f9f", // Change placeholder color on hover
-                                    },
+                                    color: "#9f9f9f",
                                     "& fieldset": { border: "none" }, // Removes the border
                                     "&:hover fieldset": { border: "none" }, // Prevents border on hover
                                     "&.Mui-focused fieldset": { border: "none" }, 
-                              }}
-                              
-                            value={search}
-                            onChange={handleInputChange}
-                            onBlur={handleBlur}
-                            />
+            }}
+            
+          value={search}
+          onChange={handleInputChange}
+          onBlur={handleBlur}
+          />
                             
       </FormControl>
 
@@ -141,32 +145,47 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
         <div>
           <button onClick={handleOpen} style={{background:'transparent'}}>Show Trailer</button>
         </div>
+        <div>
+          <button onClick={handleOpenSimilar} style={{background:'transparent'}}>Similar Anime</button>
+        </div>
           <button style={{background:'transparent'}} 
                   onClick={()=>addOrRemove?handleRemoveFavourite(currAnime):handleAddFavourite(currAnime)}
                   >
                     {addOrRemove?"Remove":"Add"}</button>
         </div>
-      </div>
-      }
-
-      <Modal
+        <Modal
         open={open}
         onClose={handleClose}
         style={{outline:"none"}}
-      >
-        <Box sx={style}>
-        <iframe
-            width="640px"
-            height="320px"
-            src={"https://www.youtube.com/embed/" + currAnime.trailer?.replace("youtube:", "")}
-            title="YouTube video player"
-            allow="encrypted-media; picture-in-picture"
-            allowfullscreen
-            style={{marginTop:"15%", marginLeft:"15%", border:"none"}}
         >
-        </iframe>
-        </Box>
-      </Modal>
+          <Box sx={style}>
+            <iframe
+                width="640px"
+                height="320px"
+                src={"https://www.youtube.com/embed/" + currAnime.trailer?.replace("youtube:", "")}
+                title="YouTube video player"
+                allow="encrypted-media; picture-in-picture"
+                allowfullscreen
+                style={{ border:"none"}}
+            >
+            </iframe>
+          </Box>
+        </Modal>
+
+        <Modal
+        open={openSimilar}
+        onClose={handleCloseSimilar}
+        style={{outline:"none"}}
+        >
+          <Box sx={style}>
+            <SimilarAnime similarAnimes={similarAnimes} setCurrAnime={setCurrAnime}/>
+          </Box>
+        </Modal>
+      </div>
+        
+      }
+
+    
     </div>
   )
 }

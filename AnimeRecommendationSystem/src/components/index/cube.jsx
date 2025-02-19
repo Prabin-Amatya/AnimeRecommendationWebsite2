@@ -6,9 +6,13 @@ import { useQueryForSearch, useSpecificQuery } from '../../hooks';
 import API_URLS from '../../config';
 import AnimeList from './animeList';
 import Favorites from './favorites';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
-function handleOnClick({setRecommendClicked, refetch}){
+function handleOnClick({setRecommendClicked, refetch, navigate, user}){
   if (refetch){
+    if(!user){
+      navigate("/Login")
+      return}
     refetch()
     document.getElementById("chargeAudio").play()
   }
@@ -163,10 +167,10 @@ const Cube = ({user, setMessage}) => {
   const [rot, setRot] = useState({
     x:0,y:0,z:0
   })
-
+  const navigate = useNavigate()
   const [search, setSearch] = useState("")
-  const [posts, postQueries] = useSpecificQuery(API_URLS.recommendation, "recommendation")
-  
+  const [posts, postQueries] = useSpecificQuery(user? API_URLS.recommendation: API_URLS.anime, user? "recommendation":"anime")
+  console.log(posts.isFetched && posts.data)
   const [currAnime, setCurrAnime] = useState(null)
   var imageView = recommendClicked? 'none': 'block'
   const [delta, setDelta] = useState({ x: 0, y: 0 }); 
@@ -259,12 +263,12 @@ const Cube = ({user, setMessage}) => {
       if(dragging){
         const deltaX = e.pageX - delta.x; // Calculate change in x
         const deltaY = e.pageY - delta.y; 
-        const newrotZ = rot.z+deltaX*2.5;
-        const newrotX = rot.x+deltaY*2.5;
+        const newrotZ = rot.z-deltaX*2;
+        const newrotX = rot.x-deltaY*2;
         let rotateParam = '';
         
         
-        rotateParam += 'rotate' + 'X' + '(' + newrotX + 'deg)';
+        rotateParam += 'rotate' + 'X' + '(' + rot.x + 'deg)';
         rotateParam += 'rotate' + 'Y' + '(' + rot.y + 'deg)';       
         rotateParam += 'rotate' + 'Z' + '(' + newrotZ + 'deg)';
         cube.style.transform = rotateParam
@@ -301,6 +305,10 @@ const Cube = ({user, setMessage}) => {
   }
 
   const handleShowFavs = () =>{
+    if(!user){
+      navigate("/Login")
+      return
+    }
     setShowFavorite(!showFavorite)
     setTimeout(()=>{
       if(!showFavorite) window.scrollTo(0, document.body.scrollHeight);
@@ -629,7 +637,7 @@ const Cube = ({user, setMessage}) => {
           </div>
           <div style={{display:"flex", alignItems:"center", flexFlow:"column"}}>
             
-              <button onClick={() => handleOnClick({setRecommendClicked, "refetch": posts.refetch})}>Recommend</button>
+              <button onClick={() => handleOnClick({setRecommendClicked, "refetch": posts.refetch, navigate, user})}>Recommend</button>
               <button onClick={handleShowFavs}>{showFavorite? "Hide Favourite": "Show Favourite"}</button>
               <button  onClick={handleAddToFavorite}>{showAddToFavorite? "Go Back": "Add to Favourite"}</button>
             {showAddToFavorite &&  <AnimeList currAnime={currAnime} setCurrAnime={setCurrAnime} user={user} setMessage={setMessage}/>}

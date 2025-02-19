@@ -2,7 +2,11 @@ import { useState } from "react";
 import {
   TextField,
   Button,
-  Typography
+  Typography,
+  FormControl,
+  Input,
+  InputLabel,
+  OutlinedInput
 } from "@mui/material";
 import API_URLS from "../config";
 import axios from "axios";
@@ -52,50 +56,68 @@ const Login = ({setMessage, userServices}) => {
     }
 
   return (
-    <div style={{display: "flex", width: "100vw", height: "60vh", justifyContent: "center", alignItems: "center" }}>
-      <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+    <div style={{display: "flex", width: "auto", height: "95vh", justifyContent: "center", alignItems: "center" }}>
+      <form onSubmit={handleSubmit} style={{ display: "flex", flexFlow:"column" }}>
         <Typography variant="h5" mb={3} style={{
           position: "relative",
           zIndex: 1,
-          background: "white",
           marginBlock: "0px",
           width: "6em",
           color: "#849e9f"
         }}>
           Login
         </Typography>
-        <div>
-          <TextField
-            fullWidth
-            label="Username"
-            name="username"
-            variant="outlined"
-            margin="normal"
-            value={formData.username}
-            onChange={handleInputChange}
-            required
-          />
-          <TextField
-            fullWidth
-            label="Password"
-            name="password"
-            variant="outlined"
-            margin="normal"
-            type="password"
-            value={formData.password1}
-            onChange={handleInputChange}
-            required
-          />
-          {<Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            sx={{ mt: 3 }}
+
+        <FormControl sx={{borderBottom:"2px solid #9f9f9f", mt:"2vh", mb:"2vh"}}>
+          <InputLabel
+            sx={{color:"#9f9f9f", "&.Mui-focused": { color: "transparent" }, "&.MuiFormLabel-filled": { color: "transparent" }}}
           >
-            Submit
-          </Button>}
-        </div>
+              Username
+          </InputLabel>
+          <OutlinedInput  sx={{
+                              color: "#9f9f9f",
+                              "& fieldset": { border: "none" }, // Removes the border
+                              "&:hover fieldset": { border: "none" }, // Prevents border on hover
+                              "&.Mui-focused fieldset": { border: "none" }, 
+                              }}
+              label="Username"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+              required
+            />
+        </FormControl>
+        
+        <FormControl sx={{borderBottom:"2px solid #9f9f9f", mt:"2vh", mb:"2vh"}}>
+          <InputLabel
+            sx={{color:"#9f9f9f", "&.Mui-focused": { color: "transparent" }, "&.MuiFormLabel-filled": { color: "tranparent" }}}
+          >
+              Password
+          </InputLabel>
+          <OutlinedInput  sx={{
+                              color: "#9f9f9f",
+                              "& fieldset": { border: "none" }, // Removes the border
+                              "&:hover fieldset": { border: "none" }, // Prevents border on hover
+                              "&.Mui-focused fieldset": { border: "none" },
+                              "&.MuiFormLabel-filled": { color: "red" } 
+                              }}
+              label="Password"
+              name="password"
+              type="password"
+              value={formData.password1}
+              onChange={handleInputChange}
+              required
+            />
+        </FormControl>
+          <button
+            type="submit"
+            style={{marginTop:"15px", 
+              background: "#d5d5d5",
+              color: "#494242",
+              fontSize:"15px"}}
+          >
+            Login
+          </button>
       </form>
     </div>
   );

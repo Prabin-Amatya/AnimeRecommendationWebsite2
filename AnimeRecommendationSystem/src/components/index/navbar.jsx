@@ -71,24 +71,21 @@ function ResponsiveAppBar({user, userServices}) {
               textDecoration: 'none',
             }}
           >
-            <Link
-              to="/"
-            >
-              ARS
-            </Link>
+            ARS
           </Typography>
             
             
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'flex' }}}>
-            {pages.map((page) => (
               <Button
-                key={page}
-                onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                
+              <Link
+                to="/"
+              >
+                Home
+              </Link>
               </Button>
-            ))}
           </Box>
           
           <Button onClick={audioPlayed? stopAudio: playAudio} 
