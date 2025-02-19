@@ -1,0 +1,90 @@
+/* body{
+  height: 97vh;
+  background:radial-gradient(circle at 26%, transparent 2%, white -8%, black 29%);
+} */
+/* linear-gradient(142deg, #0c0c0c, #272727) */
+
+/*ball distinguishing between black and white */
+/* linear-gradient(207deg, black -44%, transparent, white 151%), radial-gradient(circle at 86% 68%, transparent -1%, white -1%, black 20%) */
+
+/*ball in front of wall*/
+/* linear-gradient(361deg, black -48%, transparent 23%, white 177%), radial-gradient(circle at 53% 75%, transparent -1%, white -3%, black 22%) */
+
+/* a path linear-gradient(147deg, #000000 -32%, transparent 40%, #918E8F 118%), linear-gradient(178deg, #ffffff -131%, #00000000 35%), radial-gradient(circle at 74% 73%, #ffffff -2%, #000000 19%)*/
+
+/*black and white linear-gradient(505deg, #000000 -221%, transparent -82%, #918E8F 499%), linear-gradient(482deg, #FFFFFE -14%, #00000000 53%), radial-gradient(circle at 55% 46%, #ffffff -2%, #000000 19%)*/
+
+/*ring linear-gradient(309deg,black 21%, transparent 22%),linear-gradient(502deg, black 45%, transparent 46%),linear-gradient(384deg, white -22%, transparent 83%),radial-gradient(circle at 60% 60%, #ffffff -3%, #000000 15%)*/
+
+/*average linear gardient linear-gradient(193deg, black 43%, white 100%)*/
+
+button {
+  border: none;
+  font-size: 12px;
+  border-radius: 3px;
+  padding: 1vh 1vw;
+  background: black;
+  color: #959595;
+}
+
+button:hover {
+  color: #676565;
+  background: #b7afaf;
+  cursor: pointer;
+}
+
+.overlayText{
+  background: #00000099;
+  color: white;
+  font-size: 0.8em;
+  font-weight: 500;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  display: none;
+}
+
+body{
+  background: black;
+}
+
+a{
+  color:inherit !important;
+  text-decoration: none;
+}
+
+.similarShows {
+  text-align: left;
+  margin-top: 10px;
+  box-shadow: 0px 2px 3px 0px #494343;
+  border: 1px solid #494545;
+  color: #b7aaaa;
+  background: #161616c7;
+  cursor: pointer;
+  width: 80%;
+}
+
+.animeDetails{
+    border-bottom: 2px solid #749587;
+    margin-top: 10px;
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+    font-family: system-ui;
+    color: #9f9f9f;
+}
+
+/* For WebKit-based browsers */
+::-webkit-scrollbar {
+  width: 7px; 
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Thumb (draggable part) color */
+}

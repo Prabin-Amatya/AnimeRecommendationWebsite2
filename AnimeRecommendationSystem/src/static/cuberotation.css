@@ -1,0 +1,9 @@
+﻿@keyframes rotate {
+  0% { transform: rotateX(-90deg) rotateY(0deg); }
+  50% { transform: rotateX(90deg) rotateY(180deg); }
+  100% { transform: rotateX(-90deg) rotateY(0deg); }
+}
+.cubeAnimation {
+	animation: rotate 60s infinite linear;
+  animation-fill-mode: forwards;
+}

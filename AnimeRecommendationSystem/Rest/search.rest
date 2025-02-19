@@ -1,0 +1,8 @@
+POST  http://127.0.0.1:8000/user_account/api/register/
+Content-Type: application/json
+
+{
+  "username": "prabin",
+  "password1": "prabin@123",
+  "password2": "prabin@123"
+}
