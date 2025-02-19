@@ -4,16 +4,29 @@ import { useSpecificQuery } from "../../hooks"
 import { useEffect, useState } from "react"
 import "../../static/index.css"
 import { useNavigate } from "react-router-dom"
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  outline: 'none'
+};
+
 
 const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
   const [animes, animeQueries] = useSpecificQuery(API_URLS.anime, "anime")
   const [favorites, favoriteQueries] = useSpecificQuery(API_URLS.favorites, "favourite")
   const [addOrRemove, setAddOrRemove] = useState(false)
-  const navigate = useNavigate()
+  const [showTrailer, setShowTrailer] = useState(false)
   const [search, setSearch] = useState("")
+  const [open, setOpen] = useState(false);
+
+  const navigate = useNavigate()
   const handleInputChange = (e) =>{
     setSearch(e.target.value)
-    console.log(search)
   }
 
   const handleBlur = () =>{
@@ -23,11 +36,14 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
   }
 
   const handleClick = (anime) =>{
-    console.log(anime)
     setCurrAnime(anime)
   }
 
   const handleAddFavourite = (anime) =>{
+    if(favorites.data.length >= 10){
+      setMessage("You already have 10 favorites")
+      return
+    }
     if(!user){
       navigate("/Login")
     }
@@ -43,15 +59,22 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
   }
 
   const handleRemoveFavourite = (anime) =>{
-  try{
-    favoriteQueries.remove({"anime": anime.id})
-    setMessage("Anime Removed From Favorites")
+    try{
+      favoriteQueries.remove({"anime": anime.id})
+      setMessage("Anime Removed From Favorites")
+    }
+    catch(e){
+      console.log(e)
+      setMessage("Failed To Remove Anime From Favorites")
+    }
   }
-  catch(e){
-    console.log(e)
-    setMessage("Failed To Remove Anime From Favorites")
+
+  const handleShowTrailer = () =>{
+    setShowTrailer(true)
   }
-  }
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   useEffect(()=>{
     if(favorites.isFetched == true && currAnime!=null)
@@ -61,7 +84,6 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
         setAddOrRemove(favorites.data?.some(anime=>anime.anime == currAnime.id))}
   },[favorites, currAnime])
 
-  console.log(favorites.isFetched && favorites.data)
 
   const background = currAnime?"radial-gradient(circle, #473b3b, #413d3d, #2b2323, #000000)":"none"
   const border = currAnime?"3px solid #a9a9a9":"none"
@@ -116,24 +138,35 @@ const AnimeList = ({currAnime, setCurrAnime, user, setMessage}) =>{
         <div className="animeDetails">Release Date: {currAnime.release_date}</div>
         <div className="animeDetails">Studio: {currAnime.studio}</div>
         <div style={{display:"flex", width:"100%", justifyContent:"space-evenly"}}>
-          <button style={{background:'transparent'}}>Show Trailer</button>
+        <div>
+          <button onClick={handleOpen} style={{background:'transparent'}}>Show Trailer</button>
+        </div>
           <button style={{background:'transparent'}} 
                   onClick={()=>addOrRemove?handleRemoveFavourite(currAnime):handleAddFavourite(currAnime)}
                   >
                     {addOrRemove?"Remove":"Add"}</button>
         </div>
-        
-        {/* <iframe
-          width="100px"
-          height="100px"
-          src={"https://www.youtube.com/embed/" + currAnime.trailer?.replace("youtube:", "")}
-          title="YouTube video player"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe> */}
-
       </div>
       }
+
+      <Modal
+        open={open}
+        onClose={handleClose}
+        style={{outline:"none"}}
+      >
+        <Box sx={style}>
+        <iframe
+            width="640px"
+            height="320px"
+            src={"https://www.youtube.com/embed/" + currAnime.trailer?.replace("youtube:", "")}
+            title="YouTube video player"
+            allow="encrypted-media; picture-in-picture"
+            allowfullscreen
+            style={{marginTop:"15%", marginLeft:"15%", border:"none"}}
+        >
+        </iframe>
+        </Box>
+      </Modal>
     </div>
   )
 }

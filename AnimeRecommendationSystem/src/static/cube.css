@@ -121,6 +121,7 @@
   background: #ede7e7;
   cursor: pointer;
 }
+
 .turn-u1, .turn-d3 { transform: rotateY(-90deg); }
 .turn-f1, .turn-b3 { transform: rotateZ(90deg); }
 .turn-r1, .turn-l3 { transform: rotateX(90deg); }

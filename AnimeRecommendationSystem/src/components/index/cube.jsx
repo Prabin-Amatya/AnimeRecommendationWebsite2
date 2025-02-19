@@ -7,8 +7,11 @@ import API_URLS from '../../config';
 import AnimeList from './animeList';
 import Favorites from './favorites';
 
-function handleOnClick({setRecommendClicked}){
-  
+function handleOnClick({setRecommendClicked, refetch}){
+  if (refetch){
+    refetch()
+    document.getElementById("chargeAudio").play()
+  }
   var sides = ['u','f','r','l','b','d'];
   var face = ['1','2','3']
   var moves_forward = []
@@ -170,7 +173,7 @@ const Cube = ({user, setMessage}) => {
   const [showAddToFavorite, setShowAddToFavorite] = useState(false)
 
   useEffect(()=>{
-    handleOnClick({setRecommendClicked})
+    handleOnClick({setRecommendClicked, "refetch": null})
   }, [])
 
   function extract(m) { // supports only scale*rotate*translate matrix
@@ -298,7 +301,10 @@ const Cube = ({user, setMessage}) => {
   }
 
   const handleShowFavs = () =>{
-    setShowFavorite(true)
+    setShowFavorite(!showFavorite)
+    setTimeout(()=>{
+      if(!showFavorite) window.scrollTo(0, document.body.scrollHeight);
+    }, 500)
   }
   
   return(
@@ -623,13 +629,13 @@ const Cube = ({user, setMessage}) => {
           </div>
           <div style={{display:"flex", alignItems:"center", flexFlow:"column"}}>
             
-              <button onClick={() => handleOnClick({setRecommendClicked})}>Recommend</button>
-              <button onClick={handleShowFavs}>Favourites</button>
+              <button onClick={() => handleOnClick({setRecommendClicked, "refetch": posts.refetch})}>Recommend</button>
+              <button onClick={handleShowFavs}>{showFavorite? "Hide Favourite": "Show Favourite"}</button>
               <button  onClick={handleAddToFavorite}>{showAddToFavorite? "Go Back": "Add to Favourite"}</button>
             {showAddToFavorite &&  <AnimeList currAnime={currAnime} setCurrAnime={setCurrAnime} user={user} setMessage={setMessage}/>}
-            {showFavorite && <Favorites/>}
           </div>
         </div>
+        {showFavorite && <Favorites setCurrAnime={setCurrAnime} setShowAddToFavorite={setShowAddToFavorite}/>}
     </div>
     )
 }

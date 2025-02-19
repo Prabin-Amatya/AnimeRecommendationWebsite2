@@ -88,3 +88,9 @@ a{
 ::-webkit-scrollbar-thumb {
   background: #888; /* Thumb (draggable part) color */
 }
+
+
+.favoriteDetails:hover .overlayText{
+  transform: scaleY(1.2);
+}
+
